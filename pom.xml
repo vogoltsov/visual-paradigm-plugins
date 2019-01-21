@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.vogoltsov</groupId>
+    <artifactId>visual-paradigm-confluence-plugin</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <licenses>
+        <license>
+            <name>Apache License, version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Vitaly Ogoltsov</name>
+            <url>https://github.com/vogoltsov</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/vogoltsov/visual-paradigm-confluence-plugin</url>
+        <connection>scm:git:git://github.com/vogoltsov/visual-paradigm-confluence-plugin.git</connection>
+        <developerConnection>scm:git:git://github.com/vogoltsov/visual-paradigm-confluence-plugin.git</developerConnection>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>9</maven.compiler.source>
+        <maven.compiler.target>9</maven.compiler.target>
+
+
+        <jackson.version>2.9.8</jackson.version>
+        <lombok.version>1.18.4</lombok.version>
+        <open.unirest.jackson.version>3.0.02</open.unirest.jackson.version>
+        <open.unirest.java.version>3.3.02</open.unirest.java.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <vp.lib.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.lib.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <!-- todo -->
+                <vp.lib.dir>C:/Program Files/Visual Paradigm/app/lib</vp.lib.dir>
+            </properties>
+        </profile>
+    </profiles>
+
+
+    <dependencies>
+        <!--  Visual Paradigm API -->
+        <dependency>
+            <groupId>com.vp</groupId>
+            <artifactId>openapi</artifactId>
+            <version>15.2</version>
+            <scope>system</scope>
+            <systemPath>${vp.lib.dir}/openapi.jar</systemPath>
+        </dependency>
+
+        <!-- Unirest - lightweight REST client -->
+        <dependency>
+            <groupId>io.github.openunirest</groupId>
+            <artifactId>open-unirest-java</artifactId>
+            <version>${open.unirest.java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openunirest</groupId>
+            <artifactId>object-mappers-jackson</artifactId>
+            <version>${open.unirest.jackson.version}</version>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-dependency-classes</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>runtime</includeScope>
+                            <includes>**/*.class</includes>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
