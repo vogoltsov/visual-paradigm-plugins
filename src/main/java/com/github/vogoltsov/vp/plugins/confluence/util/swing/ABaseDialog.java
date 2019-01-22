@@ -5,10 +5,17 @@ import com.vp.plugin.view.IDialogHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Optional;
 
 /**
@@ -40,6 +47,25 @@ public abstract class ABaseDialog extends JPanel implements IDialogHandler {
         Optional.ofNullable(createHelpPanel()).ifPresent(this::add);
         Optional.ofNullable(createContentsPanel()).ifPresent(this::add);
         Optional.ofNullable(createButtonsPanel()).ifPresent(this::add);
+        this.registerEscapeAction();
+    }
+
+    private void registerEscapeAction() {
+        String actionKey = getClass().getName() + ":cancel";
+        // register escape key action
+        JRootPane rootPane = SwingUtilities.getRootPane(this);
+        rootPane.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                actionKey
+        );
+        rootPane.getActionMap().put(actionKey, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (ABaseDialog.this.canClosed()) {
+                    ABaseDialog.this.cancel();
+                }
+            }
+        });
     }
 
     /**
