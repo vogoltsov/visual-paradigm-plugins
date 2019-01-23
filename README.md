@@ -4,7 +4,10 @@ This is a set of useful plugins that I have developed and use.
 
 ## Confluence Plugin
 This plugin provides the ability to export diagrams as attachments
-to [Atlassian Confluence](https://www.atlassian.com/software/confluence) using the REST API. 
+to [Atlassian Confluence](https://www.atlassian.com/software/confluence) using the REST API.
+
+## DevTools Plugin
+This plugin is only useful during plugin development and normally should not be installed.
 
 
 # Build and Install

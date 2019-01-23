@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="com.github.vogoltsov.vp.plugins.visual-paradigm-devtools-plugin"
+        name="Develop"
+        provider="Vitaly Ogoltsov"
+        class="com.github.vogoltsov.vp.plugins.devtools.VPDevelopmentToolsPlugin">
+
+    <runtime>
+    </runtime>
+
+    <actionSets>
+
+        <actionSet id="devtools.ActionSet1">
+            <toolbar id="devtools.ActionSet1.Toolbar1"
+                     orientation="north"
+                     index="last"/>
+
+            <action id="devtools.ActionSet1.reload-all-plugins"
+                    actionType="generalAction"
+                    label="Reload All Plugins"
+                    style="normal"
+                    icon="icons/devtools/reload.png"
+                    toolbarPath="devtools.ActionSet1.Toolbar1/#">
+
+                <actionController class="com.github.vogoltsov.vp.plugins.devtools.action.ReloadAllPlugins"/>
+            </action>
+        </actionSet>
+
+    </actionSets>
+
+</plugin>

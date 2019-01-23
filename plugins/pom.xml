@@ -22,12 +22,19 @@
             <id>all-plugins</id>
             <modules>
                 <module>confluence</module>
+                <module>devtools</module>
             </modules>
         </profile>
         <profile>
             <id>confluence-plugin</id>
             <modules>
                 <module>confluence</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>devtools-plugin</id>
+            <modules>
+                <module>devtools</module>
             </modules>
         </profile>
     </profiles>
