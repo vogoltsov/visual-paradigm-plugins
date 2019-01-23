@@ -6,6 +6,13 @@ This is a set of useful plugins that I have developed and use.
 This plugin provides the ability to export diagrams as attachments
 to [Atlassian Confluence](https://www.atlassian.com/software/confluence) using the REST API.
 
+## Design Plugin
+This plugin provides a set of useful design patterns and templates:
+- model element stereotypes
+- diagram element styles
+
+Also there is a useful feature to auto-apply styles to diagram elements based on their stereotypes. 
+
 ## DevTools Plugin
 This plugin is only useful during plugin development and normally should not be installed.
 

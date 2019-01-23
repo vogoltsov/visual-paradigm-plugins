@@ -22,6 +22,7 @@
             <id>all-plugins</id>
             <modules>
                 <module>confluence</module>
+                <module>design</module>
                 <module>devtools</module>
             </modules>
         </profile>
@@ -29,6 +30,12 @@
             <id>confluence-plugin</id>
             <modules>
                 <module>confluence</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>patterns-plugin</id>
+            <modules>
+                <module>design</module>
             </modules>
         </profile>
         <profile>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="com.github.vogoltsov.vp.plugins.visual-paradigm-design-plugin"
+        name="Design"
+        provider="Vitaly Ogoltsov"
+        class="com.github.vogoltsov.vp.plugins.design.VPDesignPlugin">
+
+    <runtime>
+    </runtime>
+
+    <actionSets>
+
+        <actionSet id="design.actions.common">
+            <toolbar id="design.actions.toolbar"
+                     orientation="north"
+                     index="last"/>
+        </actionSet>
+
+        <actionSet id="design.actions.action-set-1">
+
+            <action id="design.actions.action-set-1.apply-styles-to-active-diagram"
+                    actionType="generalAction"
+                    label="Apply Styles"
+                    style="normal"
+                    toolbarPath="design.actions.toolbar/#">
+
+                <actionController class="com.github.vogoltsov.vp.plugins.design.action.ApplyStylesToActiveDiagram"/>
+            </action>
+
+            <action id="design.actions.action-set-1.sync-styles"
+                    actionType="generalAction"
+                    label="Sync Styles"
+                    style="normal"
+                    toolbarPath="design.actions.toolbar/#">
+
+                <actionController class="com.github.vogoltsov.vp.plugins.design.action.SyncStyles"/>
+            </action>
+
+            <action id="design.actions.action-set-1.sync-stereotypes"
+                    actionType="generalAction"
+                    label="Sync Stereotypes"
+                    style="normal"
+                    toolbarPath="design.actions.toolbar/#">
+
+                <actionController class="com.github.vogoltsov.vp.plugins.design.action.SyncStereotypes"/>
+            </action>
+
+        </actionSet>
+
+    </actionSets>
+
+</plugin>
