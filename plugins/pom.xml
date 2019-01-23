@@ -12,9 +12,25 @@
     <packaging>pom</packaging>
 
 
-    <modules>
-        <module>confluence</module>
-    </modules>
+    <properties>
+        <vp.plugin.install.dir>${vp.plugins.dir}/${project.groupId}.${project.artifactId}</vp.plugin.install.dir>
+    </properties>
+
+
+    <profiles>
+        <profile>
+            <id>all-plugins</id>
+            <modules>
+                <module>confluence</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>confluence-plugin</id>
+            <modules>
+                <module>confluence</module>
+            </modules>
+        </profile>
+    </profiles>
 
 
     <build>
@@ -39,6 +55,40 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>install</id>
+                            <phase>none</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <condition property="vp.plugins.dir.exists">
+                                        <available file="${vp.plugins.dir}" type="dir"/>
+                                    </condition>
+                                    <fail message="Visual Paradigm plugins directory does not exist: ${vp.plugins.dir}" unless="vp.plugins.dir.exists"/>
+
+                                    <echo message="Installing plugin to directory: ${vp.plugin.install.dir}"/>
+                                    <delete dir="${vp.plugin.install.dir}"/>
+                                    <mkdir dir="${vp.plugin.install.dir}"/>
+                                    <copy todir="${vp.plugin.install.dir}">
+                                        <fileset dir="${project.build.outputDirectory}" includes="**/*"/>
+                                    </copy>
+                                    <echo message="Plugin successfully installed to directory: ${vp.plugin.install.dir}"/>
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

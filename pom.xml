@@ -35,6 +35,9 @@
 
         <vp.version>15.2</vp.version>
         <vp.lib.dir>UNKNOWN</vp.lib.dir>
+        <vp.plugins.dir>UNKNOWN</vp.plugins.dir>
+
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
 
         <jackson.version>2.9.8</jackson.version>
         <lombok.version>1.18.4</lombok.version>
@@ -58,6 +61,7 @@
             </activation>
             <properties>
                 <vp.lib.dir>/Applications/Visual Paradigm.app/Contents/Resources/app/lib</vp.lib.dir>
+                <vp.plugins.dir>${user.home}/Library/Application Support/VisualParadigm/plugins</vp.plugins.dir>
             </properties>
         </profile>
         <profile>
@@ -139,5 +143,18 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
