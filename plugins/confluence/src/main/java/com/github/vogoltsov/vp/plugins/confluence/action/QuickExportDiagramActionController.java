@@ -1,9 +1,8 @@
 package com.github.vogoltsov.vp.plugins.confluence.action;
 
 import com.github.vogoltsov.vp.plugins.confluence.dialog.ExportDiagramToConfluenceDialog;
-import com.github.vogoltsov.vp.plugins.confluence.util.ExceptionUtils;
+import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.DiagramExportUtils;
-import com.github.vogoltsov.vp.plugins.confluence.util.vp.DiagramExtendedPropertyUtils;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;
 import com.vp.plugin.diagram.IDiagramUIModel;
@@ -24,8 +23,8 @@ public class QuickExportDiagramActionController extends ConfluenceActionControll
         // get active diagram
         IDiagramUIModel diagram = ApplicationManager.instance().getDiagramManager().getActiveDiagram();
         // get diagram export settings
-        String pageId = DiagramExtendedPropertyUtils.getDiagramConfluencePageId(diagram);
-        String attachmentId = DiagramExtendedPropertyUtils.getDiagramConfluenceAttachmentId(diagram);
+        String pageId = DiagramExportUtils.getDiagramConfluencePageId(diagram);
+        String attachmentId = DiagramExportUtils.getDiagramConfluenceAttachmentId(diagram);
         if (pageId != null) {
             try {
                 DiagramExportUtils.export(diagram, pageId, attachmentId);

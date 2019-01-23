@@ -9,12 +9,11 @@ import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
 import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluenceAttachmentField;
 import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluencePageField;
 import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluenceSpaceField;
-import com.github.vogoltsov.vp.plugins.confluence.util.ExceptionUtils;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.ABaseDialog;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.ButtonsPanel;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.HelpPanel;
+import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
+import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
+import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
+import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.DiagramExportUtils;
-import com.github.vogoltsov.vp.plugins.confluence.util.vp.DiagramExtendedPropertyUtils;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.ProjectUtils;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.diagram.IDiagramUIModel;
@@ -189,8 +188,8 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
     @Override
     protected void load() {
         String spaceKey = ProjectUtils.getConfluenceSpaceKey();
-        String pageId = DiagramExtendedPropertyUtils.getDiagramConfluencePageId(diagram);
-        String attachmentId = DiagramExtendedPropertyUtils.getDiagramConfluenceAttachmentId(diagram);
+        String pageId = DiagramExportUtils.getDiagramConfluencePageId(diagram);
+        String attachmentId = DiagramExportUtils.getDiagramConfluenceAttachmentId(diagram);
 
         // load data from confluence
         Space space = null;
@@ -234,8 +233,8 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
         }
         // save export settings to diagram extended properteis if needed
         if (this.saveExportSettingsCheckbox.isSelected()) {
-            DiagramExtendedPropertyUtils.setDiagramConfluencePageId(diagram, page.getId());
-            DiagramExtendedPropertyUtils.setDiagramConfluenceAttachmentId(diagram, attachment.getId());
+            DiagramExportUtils.setDiagramConfluencePageId(diagram, page.getId());
+            DiagramExportUtils.setDiagramConfluenceAttachmentId(diagram, attachment.getId());
         }
         // show success dialog
         ApplicationManager.instance().getViewManager().showMessageDialog(

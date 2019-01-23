@@ -1,4 +1,4 @@
-package com.github.vogoltsov.vp.plugins.confluence.util.swing;
+package com.github.vogoltsov.vp.plugins.common.swing;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;

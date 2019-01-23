@@ -1,11 +1,11 @@
 package com.github.vogoltsov.vp.plugins.confluence.dialog;
 
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceClient;
-import com.github.vogoltsov.vp.plugins.confluence.util.ExceptionUtils;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.ABaseDialog;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.ButtonsPanel;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.DocumentListenerAdapter;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.HelpPanel;
+import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
+import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
+import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
+import com.github.vogoltsov.vp.plugins.common.swing.DocumentListenerAdapter;
+import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.ProjectUtils;
 import com.vp.plugin.ApplicationManager;
 

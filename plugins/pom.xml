@@ -40,6 +40,15 @@
     </profiles>
 
 
+    <dependencies>
+        <!-- Common Plugins Library -->
+        <dependency>
+            <groupId>com.github.vogoltsov.vp.plugins</groupId>
+            <artifactId>visual-paradigm-plugins-common</artifactId>
+        </dependency>
+    </dependencies>
+
+
     <build>
         <plugins>
             <plugin>

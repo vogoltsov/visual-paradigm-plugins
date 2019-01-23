@@ -1,37 +1,42 @@
-package com.github.vogoltsov.vp.plugins.confluence.util.vp;
+package com.github.vogoltsov.vp.plugins.common.vp;
 
 import com.vp.plugin.diagram.IDiagramUIModel;
 import com.vp.plugin.model.IModelElement;
 import com.vp.plugin.model.ITaggedValue;
 import com.vp.plugin.model.ITaggedValueContainer;
 import com.vp.plugin.model.factory.IModelElementFactory;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
+ * {@link IDiagramUIModel} supports only certain subset of properties (see {@code PROPERTY_XXX} constants in {@link IDiagramUIModel}).
+ * There is no standard way to set plugin-defined properties (e.g. external id when exporting diagram to a server).
+ * <br/>
+ * This class provides a way to persistently store and access diagram extended attributes
+ * in a special model element of type {@link IModelElementFactory#MODEL_TYPE_NOTE} using the Tagged Values API.
+ *
  * @author Vitaly Ogoltsov &lt;vitaly.ogoltsov@me.com&gt;
  */
-public class DiagramExtendedPropertyUtils {
-
-    private static final String PROPERTY_CONTENT_ID = "confluence.page.id";
-    private static final String PROPERTY_ATTACHMENT_ID = "confluence.attachment.id";
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class DiagramExtendedProperties {
 
 
-    public static String getDiagramConfluencePageId(IDiagramUIModel diagram) {
-        ITaggedValue taggedValue = getTaggedValue(diagram, PROPERTY_CONTENT_ID, false);
+    /**
+     * Get diagram extended property.
+     */
+    public static String getProperty(IDiagramUIModel diagram, String name) {
+        ITaggedValue taggedValue = getTaggedValue(diagram, name, false);
         return taggedValue != null ? taggedValue.getValueAsString() : null;
     }
 
-    public static String getDiagramConfluenceAttachmentId(IDiagramUIModel diagram) {
-        ITaggedValue taggedValue = getTaggedValue(diagram, PROPERTY_ATTACHMENT_ID, false);
-        return taggedValue != null ? taggedValue.getValueAsString() : null;
+    /**
+     * Set diagram extended property.
+     * If {@code value == null} it is effectively removed from extended property set.
+     */
+    public static void setProperty(IDiagramUIModel diagram, String name, String value) {
+        setTaggedValue(diagram, name, value);
     }
 
-    public static void setDiagramConfluencePageId(IDiagramUIModel diagram, String pageId) {
-        setTaggedValue(diagram, PROPERTY_CONTENT_ID, pageId);
-    }
-
-    public static void setDiagramConfluenceAttachmentId(IDiagramUIModel diagram, String attachmentId) {
-        setTaggedValue(diagram, PROPERTY_ATTACHMENT_ID, attachmentId);
-    }
 
     private static ITaggedValue getTaggedValue(IDiagramUIModel diagram, String name, boolean create) {
         ITaggedValueContainer taggedValues = getTaggedValues(diagram, create);
@@ -78,10 +83,6 @@ public class DiagramExtendedPropertyUtils {
             }
         }
         return taggedValues;
-    }
-
-
-    private DiagramExtendedPropertyUtils() {
     }
 
 }

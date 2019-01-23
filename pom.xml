@@ -47,6 +47,7 @@
 
 
     <modules>
+        <module>common</module>
         <module>plugins</module>
     </modules>
 
@@ -81,6 +82,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Common Plugins Library -->
+            <dependency>
+                <groupId>com.github.vogoltsov.vp.plugins</groupId>
+                <artifactId>visual-paradigm-plugins-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!--  Visual Paradigm API -->
             <dependency>
                 <groupId>com.vp</groupId>

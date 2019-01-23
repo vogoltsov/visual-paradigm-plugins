@@ -1,5 +1,6 @@
 package com.github.vogoltsov.vp.plugins.confluence.util.vp;
 
+import com.github.vogoltsov.vp.plugins.common.vp.DiagramExtendedProperties;
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceAttachmentRepository;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Attachment;
 import com.vp.plugin.ApplicationManager;
@@ -20,6 +21,42 @@ import java.io.ByteArrayOutputStream;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DiagramExportUtils {
 
+    private static final String PROPERTY_CONTENT_ID = "confluence.page.id";
+    private static final String PROPERTY_ATTACHMENT_ID = "confluence.attachment.id";
+
+
+    /**
+     * Returns default confluence page id to be used when exporting a diagram.
+     */
+    public static String getDiagramConfluencePageId(IDiagramUIModel diagram) {
+        return DiagramExtendedProperties.getProperty(diagram, PROPERTY_CONTENT_ID);
+    }
+
+    /**
+     * Returns default confluence attachment id to be used when exporting a diagram.
+     */
+    public static String getDiagramConfluenceAttachmentId(IDiagramUIModel diagram) {
+        return DiagramExtendedProperties.getProperty(diagram, PROPERTY_ATTACHMENT_ID);
+    }
+
+    /**
+     * Sets default confluence page id to be used when exporting a diagram.
+     */
+    public static void setDiagramConfluencePageId(IDiagramUIModel diagram, String pageId) {
+        DiagramExtendedProperties.setProperty(diagram, PROPERTY_CONTENT_ID, pageId);
+    }
+
+    /**
+     * Sets default confluence attachment id to be used when exporting a diagram.
+     */
+    public static void setDiagramConfluenceAttachmentId(IDiagramUIModel diagram, String attachmentId) {
+        DiagramExtendedProperties.setProperty(diagram, PROPERTY_ATTACHMENT_ID, attachmentId);
+    }
+
+
+    /**
+     * Exports diagram as image and attaches it to a Confluence page.
+     */
     public static Attachment export(IDiagramUIModel diagram, String pageId, String attachmentId) {
         // export diagram as image
         byte[] imageData;

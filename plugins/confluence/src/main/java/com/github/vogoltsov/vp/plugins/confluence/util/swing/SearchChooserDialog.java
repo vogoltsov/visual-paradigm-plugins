@@ -1,6 +1,9 @@
 package com.github.vogoltsov.vp.plugins.confluence.util.swing;
 
-import com.github.vogoltsov.vp.plugins.confluence.util.ExceptionUtils;
+import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
+import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
+import com.github.vogoltsov.vp.plugins.common.swing.ListTableModel;
+import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
 import com.vp.plugin.ApplicationManager;
 import lombok.Getter;
 

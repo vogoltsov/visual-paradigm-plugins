@@ -3,7 +3,7 @@ package com.github.vogoltsov.vp.plugins.confluence.dialog;
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluencePageRepository;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Page;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
-import com.github.vogoltsov.vp.plugins.confluence.util.swing.ListTableModel;
+import com.github.vogoltsov.vp.plugins.common.swing.ListTableModel;
 import com.github.vogoltsov.vp.plugins.confluence.util.swing.SearchChooserDialog;
 import lombok.RequiredArgsConstructor;
 

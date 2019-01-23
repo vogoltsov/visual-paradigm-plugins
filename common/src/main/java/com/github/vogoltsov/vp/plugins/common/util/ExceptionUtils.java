@@ -1,4 +1,4 @@
-package com.github.vogoltsov.vp.plugins.confluence.util;
+package com.github.vogoltsov.vp.plugins.common.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
