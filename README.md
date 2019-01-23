@@ -28,6 +28,22 @@ mvn -Pconfluence-plugin clean install
 There are several ways to install a plugin to Visual Paradigm:
 - Help > Install Plugin > Install from a zip of a plugin - select plugin `.jar` file
 - install locally using maven (e.g. during development) using `install` profile:
-  ```bash
-  mvn -Pall-plugins -Pinstall clean install
-  ``` 
+    ```bash
+    mvn -Pall-plugins -Pinstall clean install
+    ``` 
+
+# Development
+## Debugging
+To enable debugging the JVM:
+1. Locate the `vplauncher.vmoptions` file containing the JVM launch arguments.
+    On Mac, this file is located at the following path: `~/Library/Application Support/VisualParadigm/vplauncher.vmoptions`
+1. Add these lines to `vplauncher.vmoptions`:
+    ```text
+    -Xdebug
+    -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
+    ```
+
+## Class Reloading
+DevTools plugin provides the ability to reload all the plugin classes using the Visual Paradigm API.
+Unfortunately this API only reloads the classes, so any changes to `plugin.xml`
+(UI modifications, plugin definition, etc.) require Visual Paradigm application to be restarted.
