@@ -13,7 +13,7 @@
 
 
     <properties>
-        <vp.plugin.install.dir>${vp.plugins.dir}/${project.groupId}.${project.artifactId}</vp.plugin.install.dir>
+        <vp.plugin.id>${project.groupId}.${project.artifactId}</vp.plugin.id>
     </properties>
 
 
@@ -83,6 +83,24 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>distribution</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                            <configuration>
+                                <descriptors>${project.basedir}/src/assembly/distribution.xml</descriptors>
+                                <attach>false</attach>
+                                <appendAssemblyId>false</appendAssemblyId>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <executions>
                         <execution>
@@ -98,13 +116,11 @@
                                     </condition>
                                     <fail message="Visual Paradigm plugins directory does not exist: ${vp.plugins.dir}" unless="vp.plugins.dir.exists"/>
 
-                                    <echo message="Installing plugin to directory: ${vp.plugin.install.dir}"/>
-                                    <delete dir="${vp.plugin.install.dir}"/>
-                                    <mkdir dir="${vp.plugin.install.dir}"/>
-                                    <copy todir="${vp.plugin.install.dir}">
-                                        <fileset dir="${project.build.outputDirectory}" includes="**/*"/>
+                                    <echo message="Installing plugin to: ${vp.plugins.dir}"/>
+                                    <delete dir="${vp.plugins.dir}/${vp.plugin.id}"/>
+                                    <copy todir="${vp.plugins.dir}">
+                                        <fileset dir="${project.build.directory}/${project.artifactId}-${project.version}" includes="**/*"/>
                                     </copy>
-                                    <echo message="Plugin successfully installed to directory: ${vp.plugin.install.dir}"/>
                                 </target>
                             </configuration>
                         </execution>
