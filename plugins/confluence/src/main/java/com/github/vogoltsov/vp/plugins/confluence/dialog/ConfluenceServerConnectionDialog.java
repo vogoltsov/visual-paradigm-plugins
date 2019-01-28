@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
@@ -91,6 +92,7 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
                         this.connectButton.setEnabled(!this.confluenceServerUrlField.getText().isEmpty());
                     }
             );
+            this.confluenceServerUrlField.addActionListener(e -> this.usernameField.requestFocus());
             contentsPanel.add(this.confluenceServerUrlField, gbc);
         }
         // new row
@@ -139,6 +141,7 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
             this.usernameField.getDocument().addDocumentListener(
                     (DocumentListenerAdapter) e -> this.passwordField.setEnabled(!this.usernameField.getText().isEmpty())
             );
+            this.usernameField.addActionListener(e -> this.passwordField.requestFocus());
             contentsPanel.add(this.usernameField, gbc);
         }
         // new row
@@ -155,6 +158,7 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
             // input
             gbc.gridx++;
             this.passwordField = new JPasswordField(10);
+            this.passwordField.addActionListener(e -> this.connectButton.doClick());
             this.passwordField.setEnabled(false);
             contentsPanel.add(this.passwordField, gbc);
         }
