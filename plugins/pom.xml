@@ -58,25 +58,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <!-- unpack dependencies to classes for each plugin so it can be installed independently -->
-                    <execution>
-                        <id>unpack-dependency-classes</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeScope>runtime</includeScope>
-                            <includes>**/*.class</includes>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
 
         <pluginManagement>
