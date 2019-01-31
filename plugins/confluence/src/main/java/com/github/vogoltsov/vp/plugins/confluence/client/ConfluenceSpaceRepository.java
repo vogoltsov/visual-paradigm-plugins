@@ -30,6 +30,7 @@ public class ConfluenceSpaceRepository {
         if (text != null && !text.isEmpty()) {
             cql.and(CQL.or(
                     CQL.like("space", text),
+                    CQL.like("space", text + "*"),
                     CQL.eq("space.key", text)
             ));
         }

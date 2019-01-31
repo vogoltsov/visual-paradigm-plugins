@@ -29,7 +29,10 @@ public class ConfluencePageRepository {
             cql.and(CQL.eq("space.key", spaceKey));
         }
         if (text != null && !text.isEmpty()) {
-            cql.and(CQL.like("title", text));
+            cql.and(CQL.or(
+                    CQL.like("title", text),
+                    CQL.like("title", text + "*")
+            ));
         }
         cql.orderBy("title");
         return search(cql);
