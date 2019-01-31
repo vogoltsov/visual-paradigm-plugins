@@ -1,9 +1,9 @@
 package com.github.vogoltsov.vp.plugins.confluence.dialog;
 
-import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceSpaceRepository;
-import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
 import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
 import com.github.vogoltsov.vp.plugins.common.swing.ListTableModel;
+import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceSpaceRepository;
+import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
 import com.github.vogoltsov.vp.plugins.confluence.util.swing.SearchChooserDialog;
 
 import java.util.Arrays;

@@ -1,13 +1,16 @@
 package com.github.vogoltsov.vp.plugins.confluence.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.SearchResult;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.SearchResults;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
-import com.github.vogoltsov.vp.plugins.confluence.util.UnirestUtils;
+import com.github.vogoltsov.vp.plugins.confluence.util.RemoteAPIException;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQL;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQLQuery;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -55,15 +58,24 @@ public class ConfluenceSpaceRepository {
 
 
     private List<Space> search(CQLQuery cql) {
-        return ConfluenceClient.getInstance().search(cql)
-                .asObject(SearchResults.class)
-                .ifFailure(UnirestUtils::handleRequestFailure)
-                .mapBody(
-                        searchResults -> searchResults.getResults().stream()
-                                .filter(SearchResult.SpaceSearchResult.class::isInstance)
-                                .map(searchResult -> ((SearchResult.SpaceSearchResult) searchResult).getSpace())
-                                .collect(Collectors.toList())
-                );
+        try {
+            return ConfluenceClient.getInstance().search(cql)
+                    .asObject(JsonNode.class)
+                    .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
+                    .mapBody(ConfluenceClient.getInstance().map(SearchResults.class).andThen(
+                            searchResults -> searchResults.getResults().stream()
+                                    .filter(SearchResult.SpaceSearchResult.class::isInstance)
+                                    .map(searchResult -> ((SearchResult.SpaceSearchResult) searchResult).getSpace())
+                                    .collect(Collectors.toList())
+                    ));
+        } catch (RemoteAPIException e) {
+            // this is a special case to mitigate bug in Confluence REST API
+            // see https://jira.atlassian.com/browse/CONFSERVER-55445
+            if (Objects.equals(e.getApiMessage(), "java.lang.IllegalArgumentException: parameters should not be empty")) {
+                return Collections.emptyList();
+            }
+            throw e;
+        }
     }
 
 

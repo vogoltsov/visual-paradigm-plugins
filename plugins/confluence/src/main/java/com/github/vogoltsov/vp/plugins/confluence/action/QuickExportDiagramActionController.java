@@ -1,7 +1,7 @@
 package com.github.vogoltsov.vp.plugins.confluence.action;
 
-import com.github.vogoltsov.vp.plugins.confluence.dialog.ExportDiagramToConfluenceDialog;
 import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
+import com.github.vogoltsov.vp.plugins.confluence.dialog.ExportDiagramToConfluenceDialog;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.DiagramExportUtils;
 import com.vp.plugin.ApplicationManager;
 import com.vp.plugin.action.VPAction;

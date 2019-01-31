@@ -1,9 +1,9 @@
 package com.github.vogoltsov.vp.plugins.confluence.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.CreateAttachmentResponse;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.ListAttachmentsResponse;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Attachment;
-import com.github.vogoltsov.vp.plugins.confluence.util.UnirestUtils;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collections;
@@ -61,9 +61,11 @@ public class ConfluenceAttachmentRepository {
                 .routeParam("pageId", pageId)
                 .queryString("expand", "container,container.space")
                 .queryString("limit", "100")
-                .asObject(ListAttachmentsResponse.class)
-                .ifFailure(UnirestUtils::handleRequestFailure)
-                .mapBody(ListAttachmentsResponse::getResults);
+                .asObject(JsonNode.class)
+                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
+                .mapBody(ConfluenceClient.getInstance().map(ListAttachmentsResponse.class).andThen(
+                        ListAttachmentsResponse::getResults
+                ));
     }
 
 
@@ -74,9 +76,11 @@ public class ConfluenceAttachmentRepository {
         return ConfluenceClient.getInstance().post("/rest/api/content/{pageId}/child/attachment")
                 .routeParam("pageId", pageId)
                 .field("file", new ByteArrayInputStream(data), title)
-                .asObject(CreateAttachmentResponse.class)
-                .ifFailure(UnirestUtils::handleRequestFailure)
-                .mapBody(createAttachmentResponse -> createAttachmentResponse.getResults().get(0));
+                .asObject(JsonNode.class)
+                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
+                .mapBody(ConfluenceClient.getInstance().map(CreateAttachmentResponse.class).andThen(
+                        createAttachmentResponse -> createAttachmentResponse.getResults().get(0)
+                ));
     }
 
     /**
@@ -87,9 +91,9 @@ public class ConfluenceAttachmentRepository {
                 .routeParam("pageId", pageId)
                 .routeParam("attachmentId", attachmentId)
                 .field("file", new ByteArrayInputStream(data), title)
-                .asObject(Attachment.class)
-                .ifFailure(UnirestUtils::handleRequestFailure)
-                .getBody();
+                .asObject(JsonNode.class)
+                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
+                .mapBody(ConfluenceClient.getInstance().map(Attachment.class));
     }
 
 

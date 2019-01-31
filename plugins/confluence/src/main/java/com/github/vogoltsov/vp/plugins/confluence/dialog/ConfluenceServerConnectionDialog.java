@@ -1,11 +1,11 @@
 package com.github.vogoltsov.vp.plugins.confluence.dialog;
 
-import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceClient;
-import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
 import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
 import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
 import com.github.vogoltsov.vp.plugins.common.swing.DocumentListenerAdapter;
 import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
+import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
+import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceClient;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.ProjectUtils;
 import com.vp.plugin.ApplicationManager;
 
@@ -22,7 +22,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;

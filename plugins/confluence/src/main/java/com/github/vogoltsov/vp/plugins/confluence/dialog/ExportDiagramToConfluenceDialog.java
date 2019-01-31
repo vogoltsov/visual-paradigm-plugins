@@ -1,5 +1,9 @@
 package com.github.vogoltsov.vp.plugins.confluence.dialog;
 
+import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
+import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
+import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
+import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceAttachmentRepository;
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluencePageRepository;
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceSpaceRepository;
@@ -9,10 +13,6 @@ import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
 import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluenceAttachmentField;
 import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluencePageField;
 import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluenceSpaceField;
-import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
-import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
-import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
-import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.DiagramExportUtils;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.ProjectUtils;
 import com.vp.plugin.ApplicationManager;

@@ -1,9 +1,9 @@
 package com.github.vogoltsov.vp.plugins.confluence.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.SearchResult;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.SearchResults;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Page;
-import com.github.vogoltsov.vp.plugins.confluence.util.UnirestUtils;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQL;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQLQuery;
 
@@ -58,16 +58,16 @@ public class ConfluencePageRepository {
         // always expand content space
         cql.expand("content.space");
         return ConfluenceClient.getInstance().search(cql)
-                .asObject(SearchResults.class)
-                .ifFailure(UnirestUtils::handleRequestFailure)
-                .mapBody(
+                .asObject(JsonNode.class)
+                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
+                .mapBody(ConfluenceClient.getInstance().map(SearchResults.class).andThen(
                         searchResults -> searchResults.getResults().stream()
                                 .filter(SearchResult.ContentSearchResult.class::isInstance)
                                 .map(searchResult -> ((SearchResult.ContentSearchResult) searchResult).getContent())
                                 .filter(Page.class::isInstance)
                                 .map(content -> (Page) content)
                                 .collect(Collectors.toList())
-                );
+                ));
     }
 
 
