@@ -41,13 +41,13 @@ public class ConfluenceSpaceRepository {
     /**
      * Returns space by key, if any.
      */
-    public Space findById(String spaceKey) {
+    public Space findByKey(String spaceKey) {
         if (spaceKey == null) {
             return null;
         }
         return search(
                 CQL.query(CQL.and(
-                        CQL.eq("type", "page"),
+                        CQL.eq("type", "space"),
                         CQL.eq("space.key", spaceKey)
                 ))
         ).stream().findAny().orElse(null);

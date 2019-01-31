@@ -208,7 +208,7 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
         if (page != null) {
             space = page.getSpace();
         } else if (spaceKey != null) {
-            space = ConfluenceSpaceRepository.getInstance().findById(spaceKey);
+            space = ConfluenceSpaceRepository.getInstance().findByKey(spaceKey);
         }
 
         this.confluenceSpaceField.setSpace(space);
