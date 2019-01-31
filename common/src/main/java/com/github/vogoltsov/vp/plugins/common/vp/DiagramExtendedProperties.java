@@ -8,6 +8,9 @@ import com.vp.plugin.model.factory.IModelElementFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * {@link IDiagramUIModel} supports only certain subset of properties (see {@code PROPERTY_XXX} constants in {@link IDiagramUIModel}).
  * There is no standard way to set plugin-defined properties (e.g. external id when exporting diagram to a server).
@@ -66,12 +69,28 @@ public class DiagramExtendedProperties {
     private static ITaggedValueContainer getTaggedValues(IDiagramUIModel diagram, boolean create) {
         String extendedPropertiesModelElementName = "_diagram." + diagram.getId() + ".extended.properties";
         // model element
-        IModelElement extendedPropertiesModelElement = diagram.getParentModel().getChildByName(extendedPropertiesModelElementName);
+        IModelElement parentModelElement = diagram.getParentModel();
+        IModelElement extendedPropertiesModelElement;
+        if (parentModelElement != null) {
+            extendedPropertiesModelElement = parentModelElement.getChildByName(extendedPropertiesModelElementName);
+        } else {
+            extendedPropertiesModelElement = Arrays.stream(
+                    diagram.getProject().toModelElementArray(IModelElementFactory.MODEL_TYPE_NOTE)
+            )
+                    .filter(modelElement -> modelElement.getParent() == null)
+                    .filter(modelElement -> Objects.equals(modelElement.getName(), extendedPropertiesModelElementName))
+                    .findAny()
+                    .orElse(null);
+
+        }
         if (extendedPropertiesModelElement == null && create) {
             // create diagram element
-            extendedPropertiesModelElement = diagram.getParentModel().createChild(IModelElementFactory.MODEL_TYPE_NOTE);
+            extendedPropertiesModelElement = IModelElementFactory.instance().createNOTE();
             extendedPropertiesModelElement.setName(extendedPropertiesModelElementName);
             extendedPropertiesModelElement.setDescription("Diagram extended properties");
+            if (parentModelElement != null) {
+                parentModelElement.addChild(extendedPropertiesModelElement);
+            }
         }
         // get tagged values
         ITaggedValueContainer taggedValues = null;
