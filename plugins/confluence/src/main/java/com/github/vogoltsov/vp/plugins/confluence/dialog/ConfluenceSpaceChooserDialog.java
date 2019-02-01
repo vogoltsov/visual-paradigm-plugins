@@ -3,11 +3,11 @@ package com.github.vogoltsov.vp.plugins.confluence.dialog;
 import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
 import com.github.vogoltsov.vp.plugins.common.swing.ListTableModel;
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceSpaceRepository;
+import com.github.vogoltsov.vp.plugins.confluence.client.dto.DataPage;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
 import com.github.vogoltsov.vp.plugins.confluence.util.swing.SearchChooserDialog;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Vitaly Ogoltsov &lt;vitaly.ogoltsov@me.com&gt;
@@ -47,7 +47,7 @@ public class ConfluenceSpaceChooserDialog extends SearchChooserDialog<Space> {
 
 
     @Override
-    protected List<Space> doSearch(String text) {
+    protected DataPage<Space> doSearch(String text) {
         return ConfluenceSpaceRepository.getInstance().search(text);
     }
 

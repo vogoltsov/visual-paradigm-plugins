@@ -1,6 +1,7 @@
 package com.github.vogoltsov.vp.plugins.confluence.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.vogoltsov.vp.plugins.confluence.client.dto.DataPage;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.SearchResult;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.SearchResults;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
@@ -8,10 +9,7 @@ import com.github.vogoltsov.vp.plugins.confluence.util.RemoteAPIException;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQL;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQLQuery;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author Vitaly Ogoltsov &lt;vitaly.ogoltsov@me.com&gt;
@@ -26,7 +24,7 @@ public class ConfluenceSpaceRepository {
     /**
      * Searches all spaces by title and key.
      */
-    public List<Space> search(String text) {
+    public DataPage<Space> search(String text) {
         CQLQuery cql = CQL.query(
                 CQL.eq("type", "space")
         );
@@ -53,26 +51,25 @@ public class ConfluenceSpaceRepository {
                         CQL.eq("type", "space"),
                         CQL.eq("space.key", spaceKey)
                 ))
-        ).stream().findAny().orElse(null);
+        ).getResults().stream().findAny().orElse(null);
     }
 
 
-    private List<Space> search(CQLQuery cql) {
+    private DataPage<Space> search(CQLQuery cql) {
         try {
             return ConfluenceClient.getInstance().search(cql)
                     .asObject(JsonNode.class)
                     .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
                     .mapBody(ConfluenceClient.getInstance().map(SearchResults.class).andThen(
-                            searchResults -> searchResults.getResults().stream()
-                                    .filter(SearchResult.SpaceSearchResult.class::isInstance)
-                                    .map(searchResult -> ((SearchResult.SpaceSearchResult) searchResult).getSpace())
-                                    .collect(Collectors.toList())
+                            searchResults -> searchResults.map(
+                                    searchResult -> ((SearchResult.SpaceSearchResult) searchResult).getSpace()
+                            )
                     ));
         } catch (RemoteAPIException e) {
             // this is a special case to mitigate bug in Confluence REST API
             // see https://jira.atlassian.com/browse/CONFSERVER-55445
             if (Objects.equals(e.getApiMessage(), "java.lang.IllegalArgumentException: parameters should not be empty")) {
-                return Collections.emptyList();
+                return DataPage.empty();
             }
             throw e;
         }

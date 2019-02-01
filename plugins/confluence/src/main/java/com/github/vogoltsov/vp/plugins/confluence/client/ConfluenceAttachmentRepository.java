@@ -2,13 +2,12 @@ package com.github.vogoltsov.vp.plugins.confluence.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.CreateAttachmentResponse;
+import com.github.vogoltsov.vp.plugins.confluence.client.dto.DataPage;
 import com.github.vogoltsov.vp.plugins.confluence.client.dto.ListAttachmentsResponse;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Attachment;
 
 import java.io.ByteArrayInputStream;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -25,13 +24,16 @@ public class ConfluenceAttachmentRepository {
     /**
      * Searches attachments by content id and text.
      */
-    public List<Attachment> search(String pageId, String text) {
+    public DataPage<Attachment> search(String pageId, String text) {
         String lowerCaseText = text.toLowerCase();
-        return findAllAttachments(pageId)
-                .stream()
-                .filter(attachment -> attachment.getTitle().toLowerCase().contains(lowerCaseText))
-                .sorted(Comparator.comparing(Attachment::getTitle))
-                .collect(Collectors.toList());
+        return DataPage.of(
+                findAllAttachments(pageId)
+                        .getResults()
+                        .stream()
+                        .filter(attachment -> attachment.getTitle().toLowerCase().contains(lowerCaseText))
+                        .sorted(Comparator.comparing(Attachment::getTitle))
+                        .collect(Collectors.toList())
+        );
     }
 
     /**
@@ -42,6 +44,7 @@ public class ConfluenceAttachmentRepository {
             return null;
         }
         return findAllAttachments(pageId)
+                .getResults()
                 .stream()
                 .filter(attachment -> Objects.equals(attachment.getId(), attachmentId))
                 .findAny()
@@ -53,19 +56,17 @@ public class ConfluenceAttachmentRepository {
      * Returns all attachments for content.
      * This method has a soft limit of {@code 100} attachments returned.
      */
-    private List<Attachment> findAllAttachments(String pageId) {
+    private DataPage<Attachment> findAllAttachments(String pageId) {
         if (pageId == null) {
-            return Collections.emptyList();
+            return DataPage.empty();
         }
         return ConfluenceClient.getInstance().get("/rest/api/content/{pageId}/child/attachment")
                 .routeParam("pageId", pageId)
                 .queryString("expand", "container,container.space")
-                .queryString("limit", "100")
+                .queryString("limit", Integer.MAX_VALUE)
                 .asObject(JsonNode.class)
                 .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
-                .mapBody(ConfluenceClient.getInstance().map(ListAttachmentsResponse.class).andThen(
-                        ListAttachmentsResponse::getResults
-                ));
+                .mapBody(ConfluenceClient.getInstance().map(ListAttachmentsResponse.class));
     }
 
 

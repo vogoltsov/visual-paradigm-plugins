@@ -2,13 +2,13 @@ package com.github.vogoltsov.vp.plugins.confluence.dialog;
 
 import com.github.vogoltsov.vp.plugins.common.swing.ListTableModel;
 import com.github.vogoltsov.vp.plugins.confluence.client.ConfluencePageRepository;
+import com.github.vogoltsov.vp.plugins.confluence.client.dto.DataPage;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Page;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
 import com.github.vogoltsov.vp.plugins.confluence.util.swing.SearchChooserDialog;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Vitaly Ogoltsov &lt;vitaly.ogoltsov@me.com&gt;
@@ -42,7 +42,7 @@ public class ConfluencePageChooserDialog extends SearchChooserDialog<Page> {
 
 
     @Override
-    protected List<Page> doSearch(String text) {
+    protected DataPage<Page> doSearch(String text) {
         return ConfluencePageRepository.getInstance().findBySpaceKeyAndText(
                 this.space != null ? this.space.getKey() : null,
                 text

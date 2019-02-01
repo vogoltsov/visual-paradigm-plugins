@@ -4,6 +4,7 @@ import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
 import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
 import com.github.vogoltsov.vp.plugins.common.swing.ListTableModel;
 import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
+import com.github.vogoltsov.vp.plugins.confluence.client.dto.DataPage;
 import com.vp.plugin.ApplicationManager;
 import lombok.Getter;
 
@@ -15,16 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JViewport;
 import javax.swing.KeyStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.List;
 
 import static java.awt.GridBagConstraints.BOTH;
 
@@ -37,6 +33,8 @@ public abstract class SearchChooserDialog<R> extends ABaseDialog {
 
     private JTable resultsTable;
     private ListTableModel<R> resultsDataModel;
+
+    private JLabel totalRowsLabel;
 
     private JButton chooseButton;
 
@@ -75,28 +73,9 @@ public abstract class SearchChooserDialog<R> extends ABaseDialog {
             gbc.gridx++;
             gbc.gridwidth = 2;
             this.resultsDataModel = getResultsDataModel();
-            this.resultsTable = new JTable(this.resultsDataModel) {
-                public boolean getScrollableTracksViewportHeight() {
-                    if (getParent() instanceof JViewport)
-                        return (getParent().getHeight() > getPreferredSize().height);
-
-                    return super.getScrollableTracksViewportHeight();
-                }
-
-                protected void paintComponent(Graphics g) {
-                    super.paintComponent(g);
-                    if (getRowCount() == 0) {
-                        Graphics2D g2d = (Graphics2D) g;
-                        g2d.setColor(Color.BLACK);
-                        g2d.drawString("Nothing found to display.", 10, 20);
-                    }
-                }
-            };
+            this.resultsTable = new JTable(this.resultsDataModel);
             this.resultsTable.getSelectionModel().addListSelectionListener(
-                    e -> {
-                        int selectedRow = this.resultsTable.getSelectedRow();
-                        this.chooseButton.setEnabled(selectedRow >= 0);
-                    }
+                    e -> this.chooseButton.setEnabled(this.resultsTable.getSelectedRow() >= 0)
             );
             // настроить выбор по нажатию 'enter'
             KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
@@ -108,6 +87,17 @@ public abstract class SearchChooserDialog<R> extends ABaseDialog {
                 }
             });
             contentsPanel.add(new JScrollPane(this.resultsTable), gbc);
+        }
+        // new row
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = BOTH;
+        {
+            gbc.gridx++;
+            gbc.gridwidth = 2;
+            this.totalRowsLabel = new JLabel();
+            contentsPanel.add(this.totalRowsLabel, gbc);
         }
 
         return contentsPanel;
@@ -132,8 +122,15 @@ public abstract class SearchChooserDialog<R> extends ABaseDialog {
 
     private void search() {
         try {
-            List<R> results = doSearch(this.searchTextField.getText());
-            this.resultsDataModel.setRows(results);
+            DataPage<R> results = doSearch(this.searchTextField.getText());
+            this.resultsDataModel.setRows(results.getResults());
+
+            String totalRowsLabelText = results.getTotalSize() + " items found";
+            if (results.getSize() < results.getTotalSize()) {
+                totalRowsLabelText += " (showing first " + results.getSize() + ")";
+            }
+            totalRowsLabelText += ".";
+            this.totalRowsLabel.setText(totalRowsLabelText);
         } catch (Exception e) {
             ApplicationManager.instance().getViewManager().showMessage(ExceptionUtils.getStackTraceAsString(e));
             ApplicationManager.instance().getViewManager().showMessageDialog(
@@ -145,7 +142,7 @@ public abstract class SearchChooserDialog<R> extends ABaseDialog {
         }
     }
 
-    protected abstract List<R> doSearch(String text);
+    protected abstract DataPage<R> doSearch(String text);
 
     private void choose() {
         this.selectedItem = this.resultsDataModel.getRowAt(this.resultsTable.getSelectedRow());
