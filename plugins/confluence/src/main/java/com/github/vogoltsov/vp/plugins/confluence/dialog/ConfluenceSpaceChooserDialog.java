@@ -24,8 +24,14 @@ public class ConfluenceSpaceChooserDialog extends SearchChooserDialog<Space> {
     protected HelpPanel createHelpPanel() {
         return new HelpPanel(
                 "",
-                "Confluence spaces are created on a per-project basis." +
-                        " Search by space key or name."
+                "<html><body>" +
+                        "<p>" +
+                        "Confluence spaces are created on a per-project basis." +
+                        "</p>" +
+                        "<p>" +
+                        "Searches confluence spaces by key (only exact match is returned) or by name (using fuzzy search)," +
+                        " if no space if found by key." +
+                        "</p>"
         );
     }
 

@@ -9,7 +9,10 @@ import com.github.vogoltsov.vp.plugins.confluence.util.RemoteAPIException;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQL;
 import com.github.vogoltsov.vp.plugins.confluence.util.cql.CQLQuery;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Vitaly Ogoltsov &lt;vitaly.ogoltsov@me.com&gt;
@@ -25,14 +28,17 @@ public class ConfluenceSpaceRepository {
      * Searches all spaces by title and key.
      */
     public DataPage<Space> search(String text) {
+        Space space = findByKey(text);
+        if (space != null) {
+            return DataPage.of(Collections.singletonList(space));
+        }
         CQLQuery cql = CQL.query(
                 CQL.eq("type", "space")
         );
         if (text != null && !text.isEmpty()) {
             cql.and(CQL.or(
                     CQL.like("space", text),
-                    CQL.like("space", text + "*"),
-                    CQL.eq("space.key", text)
+                    CQL.like("space", text + "*")
             ));
         }
         cql.orderBy("title");
