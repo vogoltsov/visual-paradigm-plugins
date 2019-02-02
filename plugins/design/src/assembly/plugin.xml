@@ -19,17 +19,19 @@
 
             <action id="design.actions.action-set-1.apply-styles-to-active-diagram"
                     actionType="generalAction"
-                    label="Apply Styles"
+                    label="Apply"
                     style="normal"
+                    icon="icons/design/apply_64x64.png"
                     toolbarPath="design.actions.toolbar/#">
 
                 <actionController class="com.github.vogoltsov.vp.plugins.design.action.ApplyStylesToActiveDiagram"/>
             </action>
 
-            <action id="design.actions.action-set-1.sync-styles"
+            <action id="design.actions.action-set-1.sync-formats"
                     actionType="generalAction"
-                    label="Sync Styles"
+                    label="Formats"
                     style="normal"
+                    icon="icons/design/styles_64x64.png"
                     toolbarPath="design.actions.toolbar/#">
 
                 <actionController class="com.github.vogoltsov.vp.plugins.design.action.SyncStyles"/>
@@ -37,8 +39,9 @@
 
             <action id="design.actions.action-set-1.sync-stereotypes"
                     actionType="generalAction"
-                    label="Sync Stereotypes"
+                    label="Stereotypes"
                     style="normal"
+                    icon="icons/design/stereotypes_64x64.png"
                     toolbarPath="design.actions.toolbar/#">
 
                 <actionController class="com.github.vogoltsov.vp.plugins.design.action.SyncStereotypes"/>

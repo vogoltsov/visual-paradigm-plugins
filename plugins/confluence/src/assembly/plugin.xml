@@ -16,9 +16,9 @@
 
             <action id="confluence.ActionSet1.export-diagram-as"
                     actionType="generalAction"
-                    label="Export Diagram As..."
+                    label="Export"
                     style="normal"
-                    icon="icons/confluence/export-as.png"
+                    icon="icons/confluence/export_64x64.png"
                     toolbarPath="confluence.ActionSet1.Toolbar1/#">
 
                 <actionController class="com.github.vogoltsov.vp.plugins.confluence.action.ExportDiagramAsActionController"/>
@@ -26,9 +26,9 @@
 
             <action id="confluence.ActionSet1.open-confluence-server-settings"
                     actionType="generalAction"
-                    label="Connect to Server"
+                    label="Connect"
                     style="normal"
-                    icon="icons/confluence/server.png"
+                    icon="icons/confluence/confluence_64x64.png"
                     toolbarPath="confluence.ActionSet1.Toolbar1/#">
 
                 <actionController class="com.github.vogoltsov.vp.plugins.confluence.action.ServerConnectionActionController"/>

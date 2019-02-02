@@ -16,9 +16,9 @@
 
             <action id="devtools.ActionSet1.reload-all-plugins"
                     actionType="generalAction"
-                    label="Reload All Plugins"
+                    label="Reload"
                     style="normal"
-                    icon="icons/devtools/reload.png"
+                    icon="icons/devtools/reload_64x64.png"
                     toolbarPath="devtools.ActionSet1.Toolbar1/#">
 
                 <actionController class="com.github.vogoltsov.vp.plugins.devtools.action.ReloadAllPlugins"/>
