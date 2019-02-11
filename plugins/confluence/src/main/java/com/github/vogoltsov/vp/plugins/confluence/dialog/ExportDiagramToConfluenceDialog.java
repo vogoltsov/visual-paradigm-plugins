@@ -1,6 +1,7 @@
 package com.github.vogoltsov.vp.plugins.confluence.dialog;
 
 import com.github.vogoltsov.vp.plugins.common.swing.ABaseDialog;
+import com.github.vogoltsov.vp.plugins.common.swing.AutoCompleteComboBox;
 import com.github.vogoltsov.vp.plugins.common.swing.ButtonsPanel;
 import com.github.vogoltsov.vp.plugins.common.swing.HelpPanel;
 import com.github.vogoltsov.vp.plugins.common.util.ExceptionUtils;
@@ -10,9 +11,6 @@ import com.github.vogoltsov.vp.plugins.confluence.client.ConfluenceSpaceReposito
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Attachment;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Page;
 import com.github.vogoltsov.vp.plugins.confluence.client.model.Space;
-import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluenceAttachmentField;
-import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluencePageField;
-import com.github.vogoltsov.vp.plugins.confluence.dialog.input.ConfluenceSpaceField;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.DiagramExportUtils;
 import com.github.vogoltsov.vp.plugins.confluence.util.vp.ProjectUtils;
 import com.vp.plugin.ApplicationManager;
@@ -27,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Optional;
@@ -42,11 +41,10 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
     @NonNull
     private final IDiagramUIModel diagram;
 
-    private ConfluenceSpaceField confluenceSpaceField;
-    private ConfluencePageField confluencePageField;
-    private ConfluenceAttachmentField confluenceAttachmentField;
+    private AutoCompleteComboBox<Space> confluenceSpaceField;
+    private AutoCompleteComboBox<Page> confluencePageField;
+    private AutoCompleteComboBox<Attachment> confluenceAttachmentField;
 
-    private JCheckBox exportDoubleResolution;
     private JCheckBox saveExportSettingsCheckbox;
 
     private JButton exportButton;
@@ -87,14 +85,20 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
             contentsPanel.add(new JLabel("Target space:"), gbc);
             // input
             gbc.gridx++;
-            this.confluenceSpaceField = new ConfluenceSpaceField();
-            this.confluenceSpaceField.addPropertyChangeListener(
-                    ConfluenceSpaceField.PROPERTY_SPACE,
-                    evt -> {
-                        this.pack();
-                        this.confluencePageField.setSpace((Space) evt.getNewValue());
-                    }
+            this.confluenceSpaceField = new AutoCompleteComboBox<>(
+                    text -> ConfluenceSpaceRepository.getInstance().search(text).getResults(),
+                    Space::getName
             );
+            this.confluenceSpaceField.addItemListener(e -> {
+                Space space = this.confluenceSpaceField.getSelectedItem();
+                this.confluencePageField.setSelectedItem(null);
+                this.confluencePageField.setEnabled(space != null);
+                if (this.confluencePageField.isEnabled()) {
+                    this.confluencePageField.requestFocusInWindow();
+                }
+            });
+            this.confluenceSpaceField.setPrototypeDisplayValue(getConfluenceSpaceFieldPrototypeDisplayValue());
+            this.confluenceSpaceField.setMaximumSize(this.confluenceSpaceField.getPreferredSize());
             contentsPanel.add(this.confluenceSpaceField, gbc);
         }
         // new row
@@ -110,16 +114,24 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
             contentsPanel.add(new JLabel("Target page:"), gbc);
             // input
             gbc.gridx++;
-            this.confluencePageField = new ConfluencePageField();
-            this.confluencePageField.addPropertyChangeListener(
-                    ConfluencePageField.PROPERTY_PAGE,
-                    evt -> {
-                        this.pack();
-                        this.confluenceAttachmentField.setPage((Page) evt.getNewValue());
-                        this.exportButton.setEnabled(evt.getNewValue() != null);
-                    }
+            this.confluencePageField = new AutoCompleteComboBox<>(
+                    text -> ConfluencePageRepository.getInstance().findBySpaceKeyAndText(
+                            Optional.ofNullable(this.confluenceSpaceField.getSelectedItem()).map(Space::getKey).orElse(null),
+                            text
+                    ).getResults(),
+                    Page::getTitle
             );
+            this.confluencePageField.addItemListener(e -> {
+                Page page = this.confluencePageField.getSelectedItem();
+                this.confluenceAttachmentField.setSelectedItem(null);
+                this.confluenceAttachmentField.setEnabled(page != null);
+                if (confluenceAttachmentField.isEnabled()) {
+                    this.confluenceAttachmentField.requestFocusInWindow();
+                }
+                this.exportButton.setEnabled(this.confluenceAttachmentField.isEnabled());
+            });
             this.confluencePageField.setEnabled(false);
+            this.confluencePageField.setMinimumSize(new Dimension(640, 0));
             contentsPanel.add(this.confluencePageField, gbc);
         }
         // new row
@@ -135,12 +147,18 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
             contentsPanel.add(new JLabel("Attachment:"), gbc);
             // input
             gbc.gridx++;
-            this.confluenceAttachmentField = new ConfluenceAttachmentField();
-            this.confluenceAttachmentField.addPropertyChangeListener(
-                    ConfluenceAttachmentField.PROPERTY_ATTACHMENT,
-                    evt -> this.pack()
+            this.confluenceAttachmentField = new AutoCompleteComboBox<>(
+                    text -> ConfluenceAttachmentRepository.getInstance().search(
+                            Optional.ofNullable(this.confluencePageField.getSelectedItem()).map(Page::getId).orElse(null),
+                            text
+                    ).getResults(),
+                    Attachment::getTitle
             );
+            this.confluenceAttachmentField.setEmptyItemAllowed(true);
+            this.confluenceAttachmentField.setEmptyItemLabel("< Export as new attachment >");
+            this.confluenceAttachmentField.addItemListener(e -> this.exportButton.requestFocusInWindow());
             this.confluenceAttachmentField.setEnabled(false);
+            this.confluenceAttachmentField.setMinimumSize(new Dimension(640, 0));
             contentsPanel.add(this.confluenceAttachmentField, gbc);
         }
         // new row
@@ -174,6 +192,13 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
         }
 
         return contentsPanel;
+    }
+
+    private Space getConfluenceSpaceFieldPrototypeDisplayValue() {
+        Space confluenceSpaceFieldPrototypeDisplayValue = new Space();
+        confluenceSpaceFieldPrototypeDisplayValue.setKey(new String(new char[10]).replace('\0', 'X'));
+        confluenceSpaceFieldPrototypeDisplayValue.setName(new String(new char[80]).replace('\0', 'x'));
+        return confluenceSpaceFieldPrototypeDisplayValue;
     }
 
     @Override
@@ -211,14 +236,28 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
             space = ConfluenceSpaceRepository.getInstance().findByKey(spaceKey);
         }
 
-        this.confluenceSpaceField.setSpace(space);
-        this.confluencePageField.setPage(page);
-        this.confluenceAttachmentField.setAttachment(attachment);
+        this.confluenceSpaceField.setSelectedItem(space);
+        this.confluencePageField.setSelectedItem(page);
+        this.confluenceAttachmentField.setSelectedItem(attachment);
+    }
+
+    @Override
+    public void shown() {
+        if (this.confluenceSpaceField.getSelectedItem() == null) {
+            this.confluenceSpaceField.requestFocusInWindow();
+        } else if (this.confluencePageField.getSelectedItem() == null) {
+            this.confluencePageField.requestFocusInWindow();
+        } else {
+            this.exportButton.requestFocusInWindow();
+        }
     }
 
     private void export() {
-        Attachment attachment = this.confluenceAttachmentField.getAttachment();
-        Page page = Optional.ofNullable(attachment).map(Attachment::getPage).orElseGet(this.confluencePageField::getPage);
+        Attachment attachment = this.confluenceAttachmentField.getSelectedItem();
+        Page page = Optional.ofNullable(attachment).map(Attachment::getPage).orElseGet(this.confluencePageField::getSelectedItem);
+        if (page == null) {
+            throw new RuntimeException("Page cannot be null");
+        }
         try {
             attachment = DiagramExportUtils.export(diagram, page.getId(), attachment != null ? attachment.getId() : null);
         } catch (Exception e) {
@@ -231,7 +270,7 @@ public class ExportDiagramToConfluenceDialog extends ABaseDialog {
             );
             return;
         }
-        // save export settings to diagram extended properteis if needed
+        // save export settings to diagram extended properties if needed
         if (this.saveExportSettingsCheckbox.isSelected()) {
             DiagramExportUtils.setDiagramConfluencePageId(diagram, page.getId());
             DiagramExportUtils.setDiagramConfluenceAttachmentId(diagram, attachment.getId());
