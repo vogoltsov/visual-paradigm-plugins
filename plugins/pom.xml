@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.vogoltsov.vp.plugins</groupId>
         <artifactId>visual-paradigm-plugins-root</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>visual-paradigm-plugins</artifactId>
     <packaging>pom</packaging>
