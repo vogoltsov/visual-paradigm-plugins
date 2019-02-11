@@ -87,11 +87,9 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
                 }
             });
             this.confluenceServerUrlField.getDocument().addDocumentListener(
-                    (DocumentListenerAdapter) e -> {
-                        this.connectButton.setEnabled(!this.confluenceServerUrlField.getText().isEmpty());
-                    }
+                    (DocumentListenerAdapter) e -> this.connectButton.setEnabled(!this.confluenceServerUrlField.getText().isEmpty())
             );
-            this.confluenceServerUrlField.addActionListener(e -> this.usernameField.requestFocus());
+            this.confluenceServerUrlField.addActionListener(e -> this.usernameField.requestFocusInWindow());
             contentsPanel.add(this.confluenceServerUrlField, gbc);
         }
         // new row
@@ -140,7 +138,7 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
             this.usernameField.getDocument().addDocumentListener(
                     (DocumentListenerAdapter) e -> this.passwordField.setEnabled(!this.usernameField.getText().isEmpty())
             );
-            this.usernameField.addActionListener(e -> this.passwordField.requestFocus());
+            this.usernameField.addActionListener(e -> this.passwordField.requestFocusInWindow());
             contentsPanel.add(this.usernameField, gbc);
         }
         // new row
@@ -185,6 +183,15 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
                 .ifPresent(this.usernameField::setText);
         Optional.ofNullable(ConfluenceClient.getInstance().getPassword())
                 .ifPresent(this.passwordField::setText);
+    }
+
+    @Override
+    public void shown() {
+        if (!this.confluenceServerUrlField.getText().isEmpty()) {
+            this.usernameField.requestFocusInWindow();
+        } else {
+            this.confluenceServerUrlField.requestFocusInWindow();
+        }
     }
 
     private void connect() {
