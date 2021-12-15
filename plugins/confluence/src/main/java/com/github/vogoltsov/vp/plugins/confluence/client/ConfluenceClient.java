@@ -17,7 +17,6 @@ import kong.unirest.HttpResponse;
 import kong.unirest.UnirestInstance;
 import kong.unirest.jackson.JacksonObjectMapper;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -35,19 +34,19 @@ public class ConfluenceClient {
 
     @Getter
     private final ObjectMapper objectMapper;
+
     @Getter
-    private final UnirestInstance unirest;
+    private volatile UnirestInstance unirest;
 
 
     @Getter
-    @Setter
     private String baseUrl;
+    @Getter
+    private boolean verifySsl = true;
 
     @Getter
-    @Setter
     private String username;
     @Getter
-    @Setter
     private String password;
 
 
@@ -68,8 +67,14 @@ public class ConfluenceClient {
 
     private UnirestInstance initUnirest() {
         Config config = new Config();
+        config.defaultBaseUrl(this.baseUrl);
+        config.verifySsl(this.verifySsl);
+        if (this.username != null && !this.username.isEmpty() && this.password != null) {
+            config.setDefaultBasicAuth(this.username, this.password);
+        }
         config.setObjectMapper(new JacksonObjectMapper(this.objectMapper));
         config.setDefaultHeader("accept", "application/json");
+        config.setDefaultHeader("X-Atlassian-Token", "nocheck");
         config.setDefaultResponseEncoding(StandardCharsets.UTF_8.name());
         return new UnirestInstance(config);
     }
@@ -80,6 +85,18 @@ public class ConfluenceClient {
      */
     public boolean isConfigured() {
         return this.baseUrl != null && !this.baseUrl.isEmpty();
+    }
+
+    /**
+     * Reconfigures client with new settings.
+     */
+    public void configure(String baseUrl, boolean verifySsl, String username, String password) {
+        this.baseUrl = baseUrl;
+        this.verifySsl = verifySsl;
+        this.username = username;
+        this.password = password;
+        // create new unirest instance
+        this.unirest = initUnirest();
     }
 
 
@@ -106,26 +123,15 @@ public class ConfluenceClient {
      * Creates a generic Confluence GET request.
      */
     GetRequest get(String uri) {
-        GetRequest request = unirest.get(this.baseUrl + uri);
-        request.header("accept", "application/json");
-        request.header("X-Atlassian-Token", "nocheck");
-        if (username != null && !username.isEmpty() && password != null) {
-            request.basicAuth(username, password);
-        }
-        return request;
+        return unirest.get(uri);
     }
 
     /**
      * Creates a generic Confluence POST request.
      */
     HttpRequestWithBody post(String uri) {
-        HttpRequestWithBody request = unirest.post(this.baseUrl + uri);
+        HttpRequestWithBody request = unirest.post(uri);
         request.charset(StandardCharsets.UTF_8);
-        request.header("accept", "application/json");
-        request.header("X-Atlassian-Token", "nocheck");
-        if (username != null && !username.isEmpty() && password != null) {
-            request.basicAuth(username, password);
-        }
         return request;
     }
 

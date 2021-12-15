@@ -35,6 +35,7 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
 
     private JTextField confluenceServerUrlField;
     private JCheckBox saveConfluenceServerUrlToProjectCheckbox;
+    private JCheckBox ignoreCertificateErrorsCheckbox;
     private JTextField usernameField;
     private JPasswordField passwordField;
 
@@ -109,6 +110,14 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
             this.saveConfluenceServerUrlToProjectCheckbox.setSelected(true);
             contentsPanel.add(this.saveConfluenceServerUrlToProjectCheckbox, gbc);
         }
+        // new horizontal separator
+        gbc.gridy++;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = BOTH;
+        contentsPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
         // new row
         gbc.gridy++;
         gbc.gridx = 0;
@@ -117,10 +126,23 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = BOTH;
         {
+            // label
             gbc.gridx++;
-            gbc.gridwidth = 2;
-            contentsPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+            contentsPanel.add(new JLabel("Ignore certificate errors"), gbc);
+            // input
+            gbc.gridx++;
+            this.ignoreCertificateErrorsCheckbox = new JCheckBox();
+            this.ignoreCertificateErrorsCheckbox.setSelected(false);
+            contentsPanel.add(this.ignoreCertificateErrorsCheckbox, gbc);
         }
+        // new horizontal separator
+        gbc.gridy++;
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = BOTH;
+        contentsPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
         // new row
         gbc.gridy++;
         gbc.gridx = 0;
@@ -173,15 +195,17 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
 
     @Override
     protected void load() {
-        if (ConfluenceClient.getInstance().isConfigured()) {
-            this.confluenceServerUrlField.setText(ConfluenceClient.getInstance().getBaseUrl());
+        ConfluenceClient client = ConfluenceClient.getInstance();
+        if (client.isConfigured()) {
+            this.confluenceServerUrlField.setText(client.getBaseUrl());
         } else {
             Optional.ofNullable(ProjectUtils.getConfluenceServerUrl())
                     .ifPresent(this.confluenceServerUrlField::setText);
         }
-        Optional.ofNullable(ConfluenceClient.getInstance().getUsername())
+        this.ignoreCertificateErrorsCheckbox.setSelected(!client.isVerifySsl());
+        Optional.ofNullable(client.getUsername())
                 .ifPresent(this.usernameField::setText);
-        Optional.ofNullable(ConfluenceClient.getInstance().getPassword())
+        Optional.ofNullable(client.getPassword())
                 .ifPresent(this.passwordField::setText);
     }
 
@@ -226,9 +250,7 @@ public class ConfluenceServerConnectionDialog extends ABaseDialog {
 
 
     private void configure(ConfluenceClient client) {
-        client.setBaseUrl(this.confluenceServerUrlField.getText());
-        client.setUsername(this.usernameField.getText());
-        client.setPassword(new String(this.passwordField.getPassword()));
+        client.configure(this.confluenceServerUrlField.getText(), !this.ignoreCertificateErrorsCheckbox.isSelected(), this.usernameField.getText(), new String(this.passwordField.getPassword()));
     }
 
 }
