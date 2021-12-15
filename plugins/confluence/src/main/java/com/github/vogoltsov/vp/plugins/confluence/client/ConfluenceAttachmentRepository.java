@@ -60,13 +60,14 @@ public class ConfluenceAttachmentRepository {
         if (pageId == null) {
             return DataPage.empty();
         }
-        return ConfluenceClient.getInstance().get("/rest/api/content/{pageId}/child/attachment")
+        ConfluenceClient client = ConfluenceClient.getInstance();
+        return client.get("/rest/api/content/{pageId}/child/attachment")
                 .routeParam("pageId", pageId)
                 .queryString("expand", "container,container.space")
                 .queryString("limit", Integer.MAX_VALUE)
                 .asObject(JsonNode.class)
-                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
-                .mapBody(ConfluenceClient.getInstance().map(ListAttachmentsResponse.class));
+                .ifFailure(client::handleFailureResponse)
+                .mapBody(client.map(ListAttachmentsResponse.class));
     }
 
 
@@ -74,12 +75,13 @@ public class ConfluenceAttachmentRepository {
      * Creates a new attachment for the given content.
      */
     public Attachment create(String pageId, String title, byte[] data) {
-        return ConfluenceClient.getInstance().post("/rest/api/content/{pageId}/child/attachment")
+        ConfluenceClient client = ConfluenceClient.getInstance();
+        return client.post("/rest/api/content/{pageId}/child/attachment")
                 .routeParam("pageId", pageId)
                 .field("file", new ByteArrayInputStream(data), title)
                 .asObject(JsonNode.class)
-                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
-                .mapBody(ConfluenceClient.getInstance().map(CreateAttachmentResponse.class).andThen(
+                .ifFailure(client::handleFailureResponse)
+                .mapBody(client.map(CreateAttachmentResponse.class).andThen(
                         createAttachmentResponse -> createAttachmentResponse.getResults().get(0)
                 ));
     }
@@ -88,13 +90,14 @@ public class ConfluenceAttachmentRepository {
      * Updates existing attachment's data.
      */
     public Attachment update(String pageId, String attachmentId, String title, byte[] data) {
-        return ConfluenceClient.getInstance().post("/rest/api/content/{pageId}/child/attachment/{attachmentId}/data")
+        ConfluenceClient client = ConfluenceClient.getInstance();
+        return client.post("/rest/api/content/{pageId}/child/attachment/{attachmentId}/data")
                 .routeParam("pageId", pageId)
                 .routeParam("attachmentId", attachmentId)
                 .field("file", new ByteArrayInputStream(data), title)
                 .asObject(JsonNode.class)
-                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
-                .mapBody(ConfluenceClient.getInstance().map(Attachment.class));
+                .ifFailure(client::handleFailureResponse)
+                .mapBody(client.map(Attachment.class));
     }
 
 

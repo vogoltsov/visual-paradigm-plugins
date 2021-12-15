@@ -33,17 +33,16 @@
         <maven.compiler.source>9</maven.compiler.source>
         <maven.compiler.target>9</maven.compiler.target>
 
-        <vp.version>15.2</vp.version>
+        <vp.version>16.3</vp.version>
         <vp.lib.dir>UNKNOWN</vp.lib.dir>
         <vp.plugins.dir>UNKNOWN</vp.plugins.dir>
 
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
 
-        <jackson.version>2.9.8</jackson.version>
-        <lombok.version>1.18.4</lombok.version>
-        <open.unirest.jackson.version>3.0.02</open.unirest.jackson.version>
-        <open.unirest.java.version>3.3.02</open.unirest.java.version>
+        <jackson.version>2.13.0</jackson.version>
+        <lombok.version>1.18.22</lombok.version>
+        <unirest.java.version>3.13.4</unirest.java.version>
     </properties>
 
 
@@ -101,14 +100,14 @@
 
             <!-- Unirest - lightweight REST client -->
             <dependency>
-                <groupId>io.github.openunirest</groupId>
-                <artifactId>open-unirest-java</artifactId>
-                <version>${open.unirest.java.version}</version>
+                <groupId>com.konghq</groupId>
+                <artifactId>unirest-java</artifactId>
+                <version>${unirest.java.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.github.openunirest</groupId>
-                <artifactId>object-mappers-jackson</artifactId>
-                <version>${open.unirest.jackson.version}</version>
+                <groupId>com.konghq</groupId>
+                <artifactId>unirest-objectmapper-jackson</artifactId>
+                <version>${unirest.java.version}</version>
             </dependency>
 
             <!-- Jackson -->

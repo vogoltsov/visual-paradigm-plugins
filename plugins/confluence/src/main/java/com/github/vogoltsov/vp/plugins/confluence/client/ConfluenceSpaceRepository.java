@@ -62,11 +62,12 @@ public class ConfluenceSpaceRepository {
 
 
     private DataPage<Space> search(CQLQuery cql) {
+        ConfluenceClient client = ConfluenceClient.getInstance();
         try {
-            return ConfluenceClient.getInstance().search(cql)
+            return client.search(cql)
                     .asObject(JsonNode.class)
-                    .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
-                    .mapBody(ConfluenceClient.getInstance().map(SearchResults.class).andThen(
+                    .ifFailure(client::handleFailureResponse)
+                    .mapBody(client.map(SearchResults.class).andThen(
                             searchResults -> searchResults.map(
                                     searchResult -> ((SearchResult.SpaceSearchResult) searchResult).getSpace()
                             )

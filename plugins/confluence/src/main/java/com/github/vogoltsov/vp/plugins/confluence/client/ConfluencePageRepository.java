@@ -53,12 +53,13 @@ public class ConfluencePageRepository {
 
 
     private DataPage<Page> search(CQLQuery cql) {
+        ConfluenceClient client = ConfluenceClient.getInstance();
         // always expand content space
         cql.expand("content.space");
-        return ConfluenceClient.getInstance().search(cql)
+        return client.search(cql)
                 .asObject(JsonNode.class)
-                .ifFailure(ConfluenceClient.getInstance()::handleFailureResponse)
-                .mapBody(ConfluenceClient.getInstance().map(SearchResults.class).andThen(
+                .ifFailure(client::handleFailureResponse)
+                .mapBody(client.map(SearchResults.class).andThen(
                         searchResults -> searchResults.map(
                                 searchResult -> (Page) ((SearchResult.ContentSearchResult) searchResult).getContent()
                         )

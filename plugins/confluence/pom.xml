@@ -15,12 +15,12 @@
     <dependencies>
         <!-- Unirest - lightweight REST client -->
         <dependency>
-            <groupId>io.github.openunirest</groupId>
-            <artifactId>open-unirest-java</artifactId>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.github.openunirest</groupId>
-            <artifactId>object-mappers-jackson</artifactId>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-objectmapper-jackson</artifactId>
         </dependency>
 
         <!-- Jackson -->
